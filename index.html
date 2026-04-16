@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>나의 깃허브 도박 게임</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; background-color: #f0f2f5; }
+        .game-container { background: white; width: 300px; margin: 50px auto; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        #money { font-size: 24px; color: #2ecc71; font-weight: bold; }
+        input { width: 80%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+        button { width: 85%; padding: 10px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #2980b9; }
+        #log { margin-top: 15px; font-size: 14px; color: #666; }
+    </style>
+</head>
+<body>
+
+    <div class="game-container">
+        <h2>💰 도박 시뮬레이터</h2>
+        <p>현재 잔액: <span id="money">1000</span>원</p>
+        
+        <input type="number" id="betAmount" placeholder="베팅 금액 입력">
+        <br>
+        <button onclick="playGame()">홀짝 게임 시작!</button>
+
+        <div id="log">금액을 입력하고 버튼을 누르세요.</div>
+    </div>
+
+    <script>
+        // 초기 자산
+        let balance = 1000;
+
+        function playGame() {
+            const betInput = document.getElementById('betAmount');
+            const bet = parseInt(betInput.value);
+            const log = document.getElementById('log');
+            const moneyDisplay = document.getElementById('money');
+
+            // 1. 예외 처리
+            if (isNaN(bet) || bet <= 0) {
+                log.innerText = "❌ 올바른 금액을 입력하세요.";
+                return;
+            }
+            if (bet > balance) {
+                log.innerText = "❌ 잔액이 부족합니다!";
+                return;
+            }
+
+            // 2. 게임 진행 (50% 확률로 성공/실패)
+            const win = Math.random() < 0.5; 
+
+            if (win) {
+                balance += bet;
+                log.innerHTML = `✅ 성공! <span style="color:blue">+${bet}원</span>을 얻었습니다.`;
+            } else {
+                balance -= bet;
+                log.innerHTML = `💀 실패... <span style="color:red">-${bet}원</span>을 잃었습니다.`;
+            }
+
+            // 3. 화면 업데이트
+            moneyDisplay.innerText = balance;
+            betInput.value = ""; // 입력창 초기화
+
+            if (balance <= 0) {
+                log.innerText = "💸 파산했습니다! 페이지를 새로고침하세요.";
+                betInput.disabled = true;
+            }
+        }
+    </script>
+</body>
+</html>
